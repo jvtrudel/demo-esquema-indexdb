@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <body>
+    <div id="esquema"></div>
+    <script>
+       class Esquema{
+         constructor(id,title){
+           this.id = id;
+           this.title = title;
+	   // anchor to the dom
+	   this.element = document.getElementById(id);
+           // set default structure
+	   this.content={ 'title': title }
+	   // render title
+	   var newh1 = document.createElement("h1");
+	   newh1.innerHTML = title
+           this.element.appendChild(newh1)
+         }
+       }
+
+       let esquema1 = new Esquema('esquema', "Nuevo esquema")
+    </script>
+  </body>
+</html>
+
