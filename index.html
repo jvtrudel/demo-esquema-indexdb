@@ -3,17 +3,34 @@
   <body>
     <div id="esquema"></div>
     <script>
+
+       function editElementToView(elem,tag){
+ 		    var text=elem.value
+		    var newElement = document.createElement(tag)
+		    newElement.innerHTML = text
+                    newElement.addEventListener('click',toggle_editable_attribute)
+		    elem.replaceWith(newElement)
+       }
+
        function toggle_editable_attribute(e){
 	       console.log(e.target.tagName)
 	       if (e.target.tagName = "H1"){
 		    var text=e.target.innerHTML
 		    var newInput = document.createElement("input")
 		    newInput.value = text
-
+                    newInput.addEventListener('keydown',toggle_to_view)
 		    e.target.replaceWith(newInput)
+		    e.target.focus()
 	       }
-       } 
-       
+       }
+
+       function toggle_to_view(e){
+	 console.log(e.key)
+         if (e.key == 'Escape' || e.key == 'Enter'){
+           editElementToView(e.target,'h1')
+	 }
+       }
+
        class Esquema{
          constructor(id,title){
            this.id = id;
