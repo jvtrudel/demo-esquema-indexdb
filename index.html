@@ -3,21 +3,32 @@
   <body>
     <div id="esquema"></div>
     <script>
+       function toggle_editable_attribute(e){
+	       console.log(e.target.tagName)
+	       if (e.target.tagName = "H1"){
+		    var text=e.target.innerHTML
+		    var newInput = document.createElement("input")
+		    newInput.value = text
+
+		    e.target.replaceWith(newInput)
+	       }
+       } 
+       
        class Esquema{
          constructor(id,title){
            this.id = id;
            this.title = title;
 	   // anchor to the dom
 	   this.element = document.getElementById(id);
-           // set default structure
+           // set default content
 	   this.content={ 'title': title }
 	   // render title
 	   var newh1 = document.createElement("h1");
 	   newh1.innerHTML = title
+	   newh1.addEventListener('click',toggle_editable_attribute)
            this.element.appendChild(newh1)
          }
        }
-
        let esquema1 = new Esquema('esquema', "Nuevo esquema")
     </script>
   </body>
