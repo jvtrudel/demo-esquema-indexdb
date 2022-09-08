@@ -20,7 +20,7 @@
 				<div class="col">
 					<h1>Datos</h1>
 					<form>
-					  <textarea id="data-textaera" cols="30" rows="10"></textarea>
+					  <textarea id="data-textarea" cols="30" rows="10"></textarea>
 						<button type="submit">Guardar</button>
 					</form>
 				</div>
@@ -221,13 +221,34 @@ st.addEventListener("input", (e)=>{
     e.target.style.borderColor = "red"
 		//console.log(err)
   }
-
-
-
-
 })
  
+const dt=document.getElementById("data-textarea")
+dt.addEventListener("input", (e)=>{
+  const text=e.target.value
+  var schemastring=document.getElementById("schema-textarea").value
+  try{
+    var jsobj = jsyaml.load(text.trim());
+		// todo: validate only if schema is valid ...
+    var schema= jsyaml.load(schemastring.trim());
+    var validate = document.ajv.compile(schema)
+    var valid = validate(jsobj)
+		if (!valid) {
+			console.log("schema is not a valid schema")
+			e.target.style.borderColor = "red"
+			//console.log(validate.errors)
+		}else {
+  
+    e.target.style.borderColor = "green"
+    }
 
+  }catch(err){
+    console.log("schema is not a yaml file")
+    e.target.style.borderColor = "red"
+		//console.log(err)
+  }
+})
+ 
 
 		</script>
   </body>

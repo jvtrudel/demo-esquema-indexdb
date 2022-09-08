@@ -10,8 +10,8 @@
   - [x] textaera to write data
   - [x] check valid yaml schema
   - [x] check schema is a valid schema
-  - [ ] check valid yaml data
-  - [ ] check data is valid according to the schema
+  - [x] check valid yaml data
+  - [x] check data is valid according to the schema
 
 ## Phase 1: save schema and data
 
