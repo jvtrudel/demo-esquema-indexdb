@@ -234,7 +234,7 @@ dt.addEventListener("input", (e)=>{
     var validate = document.ajv.compile(schema)
     var valid = validate(jsobj)
 		if (!valid) {
-			console.log("schema is not a valid schema")
+			console.log("data is not a valid schema instance")
 			e.target.style.borderColor = "red"
 			//console.log(validate.errors)
 		}else {
@@ -243,7 +243,7 @@ dt.addEventListener("input", (e)=>{
     }
 
   }catch(err){
-    console.log("schema is not a yaml file")
+    console.log("data is not a yaml file")
     e.target.style.borderColor = "red"
 		//console.log(err)
   }
