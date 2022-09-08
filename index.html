@@ -6,7 +6,6 @@
 	  <script src="vendors/js-yaml/js-yaml.min.js"></script>
 	  <script src="vendors/ajv/ajv7.bundle.js"></script>
 	  <script src="vendors/ajv/ajvJTD.bundle.js"></script>
-	  <script type="module" src="index.js"></script>
   </head>
   <body>
 		<div class="container">
@@ -14,7 +13,7 @@
 				<div class="col">
 					<h1>Esquema</h1>
 					<form>
-					  <textarea id="schema-textaera" cols="30" rows="10"></textarea>
+					  <textarea id="schema-textarea" cols="30" rows="10"></textarea>
 						<button type="submit">Guardar</button>
 					</form>
 				</div>
@@ -28,7 +27,208 @@
 			</div>
 		</div>
     <script>
-    
+
+  const Ajv = window.ajv7
+      document.ajv = new Ajv({ strict: false, allErrors: true}) // options can be passed, e.g. {allErrors: true}
+
+document.metaschema={
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Core schema meta-schema",
+    "definitions": {
+        "schemaArray": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#" }
+        },
+        "nonNegativeInteger": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "nonNegativeIntegerDefault0": {
+            "allOf": [
+                { "$ref": "#/definitions/nonNegativeInteger" },
+                { "default": 0 }
+            ]
+        },
+        "simpleTypes": {
+            "enum": [
+                "array",
+                "boolean",
+                "integer",
+                "null",
+                "number",
+                "object",
+                "string"
+            ]
+        },
+        "stringArray": {
+            "type": "array",
+            "items": { "type": "string" },
+            "uniqueItems": true,
+            "default": []
+        }
+    },
+    "type": ["object", "boolean"],
+    "properties": {
+        "$id": {
+            "type": "string",
+            "format": "uri-reference"
+        },
+        "$schema": {
+            "type": "string",
+            "format": "uri"
+        },
+        "$ref": {
+            "type": "string",
+            "format": "uri-reference"
+        },
+        "$comment": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "default": true,
+        "readOnly": {
+            "type": "boolean",
+            "default": false
+        },
+        "examples": {
+            "type": "array",
+            "items": true
+        },
+        "multipleOf": {
+            "type": "number",
+            "exclusiveMinimum": 0
+        },
+        "maximum": {
+            "type": "number"
+        },
+        "exclusiveMaximum": {
+            "type": "number"
+        },
+        "minimum": {
+            "type": "number"
+        },
+        "exclusiveMinimum": {
+            "type": "number"
+        },
+        "maxLength": { "$ref": "#/definitions/nonNegativeInteger" },
+        "minLength": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
+        "pattern": {
+            "type": "string",
+            "format": "regex"
+        },
+        "additionalItems": { "$ref": "#" },
+        "items": {
+            "anyOf": [
+                { "$ref": "#" },
+                { "$ref": "#/definitions/schemaArray" }
+            ],
+            "default": true
+        },
+        "maxItems": { "$ref": "#/definitions/nonNegativeInteger" },
+        "minItems": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
+        "uniqueItems": {
+            "type": "boolean",
+            "default": false
+        },
+        "contains": { "$ref": "#" },
+        "maxProperties": { "$ref": "#/definitions/nonNegativeInteger" },
+        "minProperties": { "$ref": "#/definitions/nonNegativeIntegerDefault0" },
+        "required": { "$ref": "#/definitions/stringArray" },
+        "additionalProperties": { "$ref": "#" },
+        "definitions": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "properties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "default": {}
+        },
+        "patternProperties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#" },
+            "propertyNames": { "format": "regex" },
+            "default": {}
+        },
+        "dependencies": {
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    { "$ref": "#" },
+                    { "$ref": "#/definitions/stringArray" }
+                ]
+            }
+        },
+        "propertyNames": { "$ref": "#" },
+        "const": true,
+        "enum": {
+            "type": "array",
+            "items": true,
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "type": {
+            "anyOf": [
+                { "$ref": "#/definitions/simpleTypes" },
+                {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/simpleTypes" },
+                    "minItems": 1,
+                    "uniqueItems": true
+                }
+            ]
+        },
+        "format": { "type": "string" },
+        "contentMediaType": { "type": "string" },
+        "contentEncoding": { "type": "string" },
+        "if": {"$ref": "#"},
+        "then": {"$ref": "#"},
+        "else": {"$ref": "#"},
+        "allOf": { "$ref": "#/definitions/schemaArray" },
+        "anyOf": { "$ref": "#/definitions/schemaArray" },
+        "oneOf": { "$ref": "#/definitions/schemaArray" },
+        "not": { "$ref": "#" }
+    },
+    "default": true
+}
+
+
+   const st=document.getElementById("schema-textarea")
+st.addEventListener("input", (e)=>{
+  const text=e.target.value
+  try{
+    var jsobj = jsyaml.load(text.trim());
+    var validate = document.ajv.compile(document.metaschema)
+    var valid = validate(jsobj)
+		if (!valid) {
+			console.log("schema is not a valid schema")
+			e.target.style.borderColor = "red"
+			//console.log(validate.errors)
+		}else {
+  
+    e.target.style.borderColor = "green"
+    }
+
+  }catch(err){
+    console.log("schema is not a yaml file")
+    e.target.style.borderColor = "red"
+		//console.log(err)
+  }
+
+
+
+
+})
+ 
+
+
 		</script>
   </body>
 </html>

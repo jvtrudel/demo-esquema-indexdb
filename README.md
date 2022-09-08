@@ -8,8 +8,8 @@
   - [x] replicable development environment (docker-compose)
   - [x] textaera to write schema
   - [x] textaera to write data
-  - [ ] check valid yaml schema
-  - [ ] check schema is a valid schema
+  - [x] check valid yaml schema
+  - [x] check schema is a valid schema
   - [ ] check valid yaml data
   - [ ] check data is valid according to the schema
 
