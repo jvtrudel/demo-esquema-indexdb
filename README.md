@@ -5,9 +5,9 @@
 
 ## Phase 0: write and validate
 
-  - [ ] replicable development environment (docker-compose)
-  - [ ] textaera to write schema
-  - [ ] textaera to write data
+  - [x] replicable development environment (docker-compose)
+  - [x] textaera to write schema
+  - [x] textaera to write data
   - [ ] check valid yaml schema
   - [ ] check schema is a valid schema
   - [ ] check valid yaml data
@@ -22,6 +22,9 @@
 
 # Usage (not implemented yet)
 
-
+```
+docker build -t web .
+docker run --rm -it -v $PWD/index.html:/usr/share/nginx/html/index.html -v $PWD/index.js:/usr/share/nginx/html/index.js -p 80:80 --name web web  
+```
 
 
