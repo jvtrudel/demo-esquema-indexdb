@@ -28,9 +28,22 @@ FROM nginx:1.23.1-alpine
 
 COPY --from=builder /builder/vendors /usr/share/nginx/html/vendors
 
+# TODO: generate a certificate at runtime if needed
+#COPY --from=builder /etc/nginx/certs /etc/nginx/certs
+#RUN mkdir -p /etc/nginx/certs
+#RUN curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"\
+#    && chmod +x mkcert-*\
+#    && mv mkcert-* /usr/local/bin/mkcert
+#RUN mkcert localhost 0.0.0.0 192.168.0.171\
+#    && mkdir -p /etc/nginx/certs\
+#    && mv *.pem /etc/nginx/certs/
+
+
+# TODO: supercharge the entrypoint to start a html file watch process
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 80
+EXPOSE 443
 
 STOPSIGNAL SIGQUIT
 

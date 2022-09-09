@@ -1,0 +1,75 @@
+#! /bin/bash
+set -eu
+
+_usage(){
+cat <<-EOM
+
+NAME
+  dev -- helper cli for development purpose
+
+SYNOPSIS
+
+  dev build                # Build docker image
+  dev mkcert [EXPOSED_IP]  # Generate self signed certificate and nginx config file
+  dev run                  # Run docker image
+  dev clean                # Stop and destroy everything
+
+EOM
+}
+
+err(){ >&2 echo "ERROR: $@" ; exit 1 ; }
+
+
+_build(){
+  pushd $SRC
+  docker build -t web .
+  popd
+}
+
+_mkcert(){
+  IP=${1:-localhost}
+  pushd $SRC
+  mkdir -p .docker/certs
+  mkcert --key-file .docker/certs/ss-cert-key.pem --cert-file .docker/certs/ss-cert.pem $IP
+  cat nginx.conf.tmpl | sed "s/IP_ADDRESS/$IP/g" > .docker/nginx.conf
+}
+
+_run(){
+	docker run --rm -it -v $SRC/index.html:/usr/share/nginx/html/index.html -v $SRC/index.js:/usr/share/nginx/html/index.js -p 80:80 -p 443:443 --name web -v $SRC/.docker/certs:/etc/nginx/certs -v $SRC/.docker/nginx.conf:/etc/nginx/conf.d/default.conf  web
+}
+
+_stop(){
+  docker ps -aq -f NAME=web | xargs -I % docker stop %
+}
+
+_exec(){
+  err not yet implemented
+}
+
+_up(){
+  err not yet implemented
+}
+
+_clear(){
+_stop || true
+docker ps -aq -f NAME=web | xargs -I % docker rm % || true
+docker images -q  web | xargs -I % docker rmi % || true
+docker history web -q | xargs -I % docker rmi % || true
+rm -rf $SRC/.docker
+}
+
+
+SRC=$(readlink -f "$(dirname "${BASH_SOURCE[0]}")")
+COMMAND="${1:-help}"
+shift 1 2> /dev/null || true
+case  "${COMMAND}" in
+  help|usage|h) _usage $@ ;;
+  build|b) _build $@ ;;
+  up|u) _up $@ ;;
+  run|r) _run $@ ;;
+  stop|s) _stop $@ ;;
+  exec|e) _exec $@ ;;
+  clear|clean|c) _clear $@ ;;
+  mkcert|m) _mkcert $@ ;;
+  *) err "Command '$COMMAND' not found" ;;
+esac
