@@ -17,9 +17,18 @@
 
 ## Manage schema version
 
+
+## Progressive Web Application
+
+  - [x] can be installed
+  - [x] can run offline 
+
 ## DEVELOPMENT ENVIRONMENT
 
   - [x] use https
   - [ ] add certificate generation at docker runtime
   - [ ] enable dynamic development (auto-refresh)
 
+## Deployment
+
+  - [ ] create a bundle

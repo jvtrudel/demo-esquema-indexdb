@@ -35,7 +35,16 @@ _mkcert(){
 }
 
 _run(){
-	docker run --rm -it -v $SRC/index.html:/usr/share/nginx/html/index.html -v $SRC/index.js:/usr/share/nginx/html/index.js -p 80:80 -p 443:443 --name web -v $SRC/.docker/certs:/etc/nginx/certs -v $SRC/.docker/nginx.conf:/etc/nginx/conf.d/default.conf  web
+	docker run --rm -it\
+		-v $SRC/index.html:/usr/share/nginx/html/index.html\
+	 	-v $SRC/index.js:/usr/share/nginx/html/index.js\
+	 	-v $SRC/assets:/usr/share/nginx/html/assets\
+	 	-v $SRC/sw.js:/usr/share/nginx/html/sw.js\
+	 	-v $SRC/manifest.webmanifest:/usr/share/nginx/html/manifest.webmanifest\
+	 	-v $SRC/.docker/certs:/etc/nginx/certs\
+	 	-v $SRC/.docker/nginx.conf:/etc/nginx/conf.d/default.conf\
+		-p 80:80 -p 443:443 --name web\
+		web
 }
 
 _stop(){
